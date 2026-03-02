@@ -62,9 +62,13 @@ def fetch_from_api_football(date_str):
     try:
         print("📡 Trying API-Football...")
         
+        if not API_FOOTBALL_KEY:
+            print("  ⚠️  No API key configured")
+            return []
+        
         headers = {
             'x-rapidapi-host': 'v3.football.api-sports.io',
-            'x-rapidapi-key': API_FOOTBALL_KEY or 'YOUR_KEY_HERE'
+            'x-rapidapi-key': API_FOOTBALL_KEY
         }
         
         # Get fixtures for tomorrow
@@ -84,19 +88,31 @@ def fetch_from_api_football(date_str):
                 print(f"✅ API-Football: Found {len(fixtures)} real matches")
                 processed = []
                 for match in fixtures[:20]:  # Limit to 20 matches
-                    league_name = match['league']['name']
-                    # Focus on major leagues
-                    if any(league in league_name for league in ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions']):
-                        processed.append({
-                            'home': match['teams']['home']['name'],
-                            'away': match['teams']['away']['name'],
-                            'league': league_name,
-                            'odds': (2.0, 3.4, 3.5),  # Default odds (can enhance with odds endpoint)
-                            'source': 'API-Football'
-                        })
-                return processed
-        
-        print(f"⚠️  API-Football failed: Status {response.status_code}")
+                    try:
+                        league_name = match['league']['name']
+                        # Focus on major leagues
+                        if any(league in league_name for league in ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions']):
+                            processed.append({
+                                'home': match['teams']['home']['name'],
+                                'away': match['teams']['away']['name'],
+                                'league': league_name,
+                                'odds': (2.0, 3.4, 3.5),  # Default odds (can enhance with odds endpoint)
+                                'source': 'API-Football'
+                            })
+                    except Exception as e:
+                        print(f"  ⚠️  Skipping match: {e}")
+                        continue
+                
+                if processed:
+                    return processed
+            else:
+                print(f"  ℹ️  No matches found for {date_str}")
+        else:
+            print(f"  ⚠️  Status {response.status_code}")
+            if response.status_code == 403:
+                print("  → Check your API key is correct")
+            elif response.status_code == 429:
+                print("  → Rate limit reached (wait a minute)")
         
     except Exception as e:
         print(f"⚠️  API-Football error: {e}")
@@ -122,24 +138,47 @@ def fetch_from_football_data(date_str):
         response = requests.get(url, headers=headers, params=params, timeout=10)
         
         if response.status_code == 200:
-            data = response.json()
-            fixtures = data.get('matches', [])
+            try:
+                data = response.json()
+                fixtures = data.get('matches', [])
+                
+                if fixtures:
+                    print(f"✅ Football-Data: Found {len(fixtures)} real matches")
+                    processed = []
+                    for match in fixtures[:20]:
+                        try:
+                            # Handle nested structure safely
+                            competition = match.get('competition', {})
+                            home_team = match.get('homeTeam', {})
+                            away_team = match.get('awayTeam', {})
+                            
+                            league_name = competition.get('name', 'Unknown')
+                            home_name = home_team.get('name', 'Unknown')
+                            away_name = away_team.get('name', 'Unknown')
+                            
+                            if home_name != 'Unknown' and away_name != 'Unknown':
+                                processed.append({
+                                    'home': home_name,
+                                    'away': away_name,
+                                    'league': league_name,
+                                    'odds': (2.1, 3.3, 3.4),
+                                    'source': 'Football-Data.org'
+                                })
+                        except Exception as e:
+                            print(f"  ⚠️  Skipping match: {e}")
+                            continue
+                    
+                    if processed:
+                        return processed
+                else:
+                    print(f"  ℹ️  No matches found for {date_str}")
+                    return []
             
-            if fixtures:
-                print(f"✅ Football-Data: Found {len(fixtures)} real matches")
-                processed = []
-                for match in fixtures[:20]:
-                    league_name = match['competition']['name']
-                    processed.append({
-                        'home': match['homeTeam']['name'],
-                        'away': match['awayTeam']['name'],
-                        'league': league_name,
-                        'odds': (2.1, 3.3, 3.4),
-                        'source': 'Football-Data.org'
-                    })
-                return processed
-        
-        print(f"⚠️  Football-Data.org failed: Status {response.status_code}")
+            except ValueError as e:
+                print(f"  ⚠️  JSON parse error: {e}")
+                print(f"  Response: {response.text[:200]}")
+        else:
+            print(f"⚠️  Status {response.status_code}: {response.text[:100]}")
         
     except Exception as e:
         print(f"⚠️  Football-Data.org error: {e}")
@@ -224,32 +263,42 @@ def fetch_from_sportsdb(date_str):
         all_matches = []
         
         for league_id, league_name in leagues.items():
-            url = f"https://www.thesportsdb.com/api/v1/json/3/eventsday.php"
-            params = {
-                'd': date_str,
-                'l': league_id
-            }
-            
-            response = requests.get(url, params=params, timeout=10)
-            
-            if response.status_code == 200:
-                data = response.json()
-                events = data.get('events', [])
+            try:
+                url = f"https://www.thesportsdb.com/api/v1/json/3/eventsday.php"
+                params = {
+                    'd': date_str,
+                    'l': league_id
+                }
                 
-                if events:
-                    for event in events:
-                        if event.get('strSport') == 'Soccer':
-                            all_matches.append({
-                                'home': event['strHomeTeam'],
-                                'away': event['strAwayTeam'],
-                                'league': league_name,
-                                'odds': (2.0, 3.4, 3.6),
-                                'source': 'TheSportsDB'
-                            })
+                response = requests.get(url, params=params, timeout=10)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    events = data.get('events', [])
+                    
+                    if events:
+                        for event in events:
+                            if event.get('strSport') == 'Soccer':
+                                home = event.get('strHomeTeam', '').strip()
+                                away = event.get('strAwayTeam', '').strip()
+                                if home and away:
+                                    all_matches.append({
+                                        'home': home,
+                                        'away': away,
+                                        'league': league_name,
+                                        'odds': (2.0, 3.4, 3.6),
+                                        'source': 'TheSportsDB'
+                                    })
+            
+            except Exception as e:
+                print(f"  ⚠️  {league_name} error: {e}")
+                continue
         
         if all_matches:
             print(f"✅ TheSportsDB: Found {len(all_matches)} real matches")
             return all_matches[:20]
+        else:
+            print(f"  ℹ️  No matches found for {date_str}")
         
     except Exception as e:
         print(f"⚠️  TheSportsDB error: {e}")
