@@ -73,8 +73,107 @@ class OddsRecord(db.Model):
     btts = db.Column(db.String(1))  # 'Y' or 'N' - Both Teams To Score
     goals_for = db.Column(db.Integer)  # Total goals in match (for BTTS tracking)
 
+def init_sample_data():
+    """Initialize database with sample matches if empty"""
+    try:
+        # Only add sample data if database is empty
+        if OddsRecord.query.count() == 0:
+            sample_matches = [
+                {
+                    'home_team': 'Man City', 'away_team': 'Arsenal', 'league': 'Premier League',
+                    'odds_1': 1.85, 'odds_x': 3.50, 'odds_2': 4.20, 'actual_result': '1',
+                    'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                    'uploaded_at': datetime.now() - timedelta(days=2)
+                },
+                {
+                    'home_team': 'Real Madrid', 'away_team': 'Barcelona', 'league': 'La Liga',
+                    'odds_1': 2.10, 'odds_x': 3.30, 'odds_2': 3.40, 'actual_result': 'X',
+                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
+                    'uploaded_at': datetime.now() - timedelta(days=3)
+                },
+                {
+                    'home_team': 'Inter Milan', 'away_team': 'AC Milan', 'league': 'Serie A',
+                    'odds_1': 2.20, 'odds_x': 3.20, 'odds_2': 3.25, 'actual_result': '1',
+                    'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                    'uploaded_at': datetime.now() - timedelta(days=4)
+                },
+                {
+                    'home_team': 'Bayern Munich', 'away_team': 'Dortmund', 'league': 'Bundesliga',
+                    'odds_1': 1.65, 'odds_x': 4.00, 'odds_2': 5.50, 'actual_result': '1',
+                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 4,
+                    'uploaded_at': datetime.now() - timedelta(days=5)
+                },
+                {
+                    'home_team': 'PSG', 'away_team': 'Monaco', 'league': 'Ligue 1',
+                    'odds_1': 1.55, 'odds_x': 4.20, 'odds_2': 6.00, 'actual_result': '1',
+                    'source': 'Betpawa', 'is_completed': True, 'btts': 'N', 'goals_for': 2,
+                    'uploaded_at': datetime.now() - timedelta(days=6)
+                },
+                {
+                    'home_team': 'Liverpool', 'away_team': 'Chelsea', 'league': 'Premier League',
+                    'odds_1': 2.00, 'odds_x': 3.40, 'odds_2': 3.75, 'actual_result': '2',
+                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                    'uploaded_at': datetime.now() - timedelta(days=7)
+                },
+                {
+                    'home_team': 'Atletico Madrid', 'away_team': 'Sevilla', 'league': 'La Liga',
+                    'odds_1': 1.90, 'odds_x': 3.40, 'odds_2': 4.50, 'actual_result': 'X',
+                    'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
+                    'uploaded_at': datetime.now() - timedelta(days=8)
+                },
+                {
+                    'home_team': 'Juventus', 'away_team': 'Napoli', 'league': 'Serie A',
+                    'odds_1': 2.30, 'odds_x': 3.10, 'odds_2': 3.20, 'actual_result': '2',
+                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                    'uploaded_at': datetime.now() - timedelta(days=9)
+                },
+                # Upcoming matches
+                {
+                    'home_team': 'Tottenham', 'away_team': 'Man United', 'league': 'Premier League',
+                    'odds_1': 2.15, 'odds_x': 3.30, 'odds_2': 3.50, 'source': 'Betpawa',
+                    'is_completed': False, 'uploaded_at': datetime.now()
+                },
+                {
+                    'home_team': 'Brighton', 'away_team': 'Newcastle', 'league': 'Premier League',
+                    'odds_1': 2.40, 'odds_x': 3.20, 'odds_2': 3.00, 'source': '1xbet',
+                    'is_completed': False, 'uploaded_at': datetime.now()
+                },
+                {
+                    'home_team': 'Valencia', 'away_team': 'Athletic Bilbao', 'league': 'La Liga',
+                    'odds_1': 2.05, 'odds_x': 3.35, 'odds_2': 3.80, 'source': 'Betpawa',
+                    'is_completed': False, 'uploaded_at': datetime.now()
+                },
+                {
+                    'home_team': 'AS Roma', 'away_team': 'Lazio', 'league': 'Serie A',
+                    'odds_1': 2.25, 'odds_x': 3.25, 'odds_2': 3.30, 'source': '1xbet',
+                    'is_completed': False, 'uploaded_at': datetime.now()
+                },
+                {
+                    'home_team': 'RB Leipzig', 'away_team': 'Leverkusen', 'league': 'Bundesliga',
+                    'odds_1': 2.35, 'odds_x': 3.40, 'odds_2': 3.00, 'source': 'Betpawa',
+                    'is_completed': False, 'uploaded_at': datetime.now()
+                },
+                {
+                    'home_team': 'Marseille', 'away_team': 'Lyon', 'league': 'Ligue 1',
+                    'odds_1': 2.10, 'odds_x': 3.30, 'odds_2': 3.60, 'source': '1xbet',
+                    'is_completed': False, 'uploaded_at': datetime.now()
+                }
+            ]
+            
+            for match_data in sample_matches:
+                match_name = f"{match_data['home_team']} vs {match_data['away_team']}"
+                match = OddsRecord(match_name=match_name, **match_data)
+                db.session.add(match)
+            
+            db.session.commit()
+            app.logger.info(f"✓ Initialized database with {len(sample_matches)} sample matches")
+    except Exception as e:
+        app.logger.error(f"Error initializing sample data: {str(e)}")
+        db.session.rollback()
+
 with app.app_context():
     db.create_all()
+    init_sample_data()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
