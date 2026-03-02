@@ -60,6 +60,7 @@ class OddsRecord(db.Model):
     match_name = db.Column(db.String(200))
     home_team = db.Column(db.String(100))  # Home team name
     away_team = db.Column(db.String(100))  # Away team name
+    league = db.Column(db.String(100))  # Premier League, La Liga, Serie A, Bundesliga, Ligue 1
     odds_1 = db.Column(db.Float)  # Home win
     odds_x = db.Column(db.Float)  # Draw
     odds_2 = db.Column(db.Float)  # Away win
@@ -681,6 +682,73 @@ def predict_next_odds(history_records, home_team=None, away_team=None):
 # Routes
 @app.route('/')
 def index():
+    """
+    Main landing page showing past results and upcoming match predictions
+    """
+    try:
+        # Get past completed matches (limited to 10 most recent)
+        past_matches = OddsRecord.query.filter_by(
+            is_completed=True
+        ).order_by(OddsRecord.uploaded_at.desc()).limit(10).all()
+        
+        # Get upcoming matches (not completed)
+        upcoming_matches = OddsRecord.query.filter_by(
+            is_completed=False
+        ).order_by(OddsRecord.uploaded_at.desc()).limit(10).all()
+        
+        # Generate predictions for upcoming matches based on historical odds trends
+        predictions = []
+        all_completed = OddsRecord.query.filter_by(is_completed=True).order_by(
+            OddsRecord.uploaded_at.desc()
+        ).limit(100).all()
+        
+        for match in upcoming_matches:
+            # Analyze each outcome based on historical data
+            analysis_1 = analyze_odds_range(match.odds_1, '1') if match.odds_1 else None
+            analysis_x = analyze_odds_range(match.odds_x, 'X') if match.odds_x else None
+            analysis_2 = analyze_odds_range(match.odds_2, '2') if match.odds_2 else None
+            
+            # Determine best prediction
+            best_bet = None
+            best_confidence = 0
+            
+            if analysis_1 and analysis_1['win_rate'] > best_confidence:
+                best_bet = '1'
+                best_confidence = analysis_1['win_rate']
+            if analysis_x and analysis_x['win_rate'] > best_confidence:
+                best_bet = 'X'
+                best_confidence = analysis_x['win_rate']
+            if analysis_2 and analysis_2['win_rate'] > best_confidence:
+                best_bet = '2'
+                best_confidence = analysis_2['win_rate']
+            
+            predictions.append({
+                'match': match,
+                'prediction': best_bet,
+                'confidence': round(best_confidence, 1) if best_confidence else 0,
+                'analysis_1': analysis_1,
+                'analysis_x': analysis_x,
+                'analysis_2': analysis_2
+            })
+        
+        return render_template('home.html', 
+                             past_matches=past_matches,
+                             upcoming_matches=predictions,
+                             total_past=len(past_matches),
+                             total_upcoming=len(upcoming_matches))
+    except Exception as e:
+        app.logger.error(f"Error in index route: {str(e)}")
+        return render_template('home.html', 
+                             past_matches=[],
+                             upcoming_matches=[],
+                             total_past=0,
+                             total_upcoming=0)
+
+@app.route('/admin')
+def admin():
+    """
+    Admin page for uploading and managing match data
+    """
     return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])

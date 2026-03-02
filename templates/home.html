@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Odds Predictor | AI-Powered Match Predictions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="football-logo">
+                <div class="flame-container">
+                    <div class="flame flame-1"></div>
+                    <div class="flame flame-2"></div>
+                    <div class="flame flame-3"></div>
+                </div>
+                <i class="fas fa-futbol football-icon"></i>
+                <i class="fas fa-trophy cup-icon"></i>
+            </div>
+            <h1 class="hero-title">Football Odds Predictor</h1>
+            <p class="hero-subtitle">AI-Powered Match Predictions from Top 5 Leagues</p>
+            <p class="hero-description">Analyzing historical odds trends to predict upcoming match outcomes</p>
+        </div>
+
+        <!-- Contact Banner -->
+        <div class="contact-banner">
+            <div class="contact-title">
+                <i class="fas fa-headset"></i> Need Help? Contact Support
+            </div>
+            <div class="contact-links">
+                <a href="https://facebook.com/andrew.fectus.bangalie" target="_blank" class="contact-item">
+                    <i class="fab fa-facebook"></i> Facebook Support
+                </a>
+                <a href="https://wa.me/23279002033" target="_blank" class="contact-item">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Support
+                </a>
+                <a href="https://tiktok.com/@Andy1" target="_blank" class="contact-item">
+                    <i class="fab fa-tiktok"></i> TikTok Support
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <i class="fas fa-history"></i>
+                <h3>{{ total_past }}</h3>
+                <p>Past Matches</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-crystal-ball"></i>
+                <h3>{{ total_upcoming }}</h3>
+                <p>Upcoming Predictions</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>AI Analysis</h3>
+                <p>Historical Trends</p>
+            </div>
+        </div>
+
+        <!-- Past Matches Section -->
+        <section class="matches-section">
+            <h2 class="section-title">
+                <i class="fas fa-check-circle"></i> Recent Match Results
+            </h2>
+            <p class="section-subtitle">Past matches from top 5 leagues with final odds and results</p>
+            
+            {% if past_matches %}
+            <div class="matches-grid">
+                {% for match in past_matches %}
+                <div class="match-card past-match">
+                    <div class="match-header">
+                        <span class="league-badge">{{ match.league or 'League' }}</span>
+                        <span class="date">{{ match.uploaded_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team home-team {% if match.actual_result == '1' %}winner{% endif %}">
+                            <i class="fas fa-home"></i>
+                            <span>{{ match.home_team or 'Home Team' }}</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team away-team {% if match.actual_result == '2' %}winner{% endif %}">
+                            <span>{{ match.away_team or 'Away Team' }}</span>
+                            <i class="fas fa-flag"></i>
+                        </div>
+                    </div>
+                    <div class="match-odds">
+                        <div class="odd-item {% if match.actual_result == '1' %}winning-odd{% endif %}">
+                            <span class="odd-label">Home Win</span>
+                            <span class="odd-value">{{ "%.2f"|format(match.odds_1) if match.odds_1 else 'N/A' }}</span>
+                        </div>
+                        <div class="odd-item {% if match.actual_result == 'X' %}winning-odd{% endif %}">
+                            <span class="odd-label">Draw</span>
+                            <span class="odd-value">{{ "%.2f"|format(match.odds_x) if match.odds_x else 'N/A' }}</span>
+                        </div>
+                        <div class="odd-item {% if match.actual_result == '2' %}winning-odd{% endif %}">
+                            <span class="odd-label">Away Win</span>
+                            <span class="odd-value">{{ "%.2f"|format(match.odds_2) if match.odds_2 else 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <div class="match-result">
+                        <span class="result-label">Result:</span>
+                        <span class="result-badge {{ 'result-' + match.actual_result if match.actual_result else '' }}">
+                            {% if match.actual_result == '1' %}Home Win
+                            {% elif match.actual_result == 'X' %}Draw
+                            {% elif match.actual_result == '2' %}Away Win
+                            {% else %}N/A
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="match-source">
+                        <i class="fas fa-database"></i> {{ match.source or 'Bookmaker' }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No past match data available yet</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Upcoming Matches Section -->
+        <section class="matches-section">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-alt"></i> Upcoming Match Predictions
+            </h2>
+            <p class="section-subtitle">AI predictions based on historical odds trend analysis</p>
+            
+            {% if upcoming_matches %}
+            <div class="matches-grid">
+                {% for item in upcoming_matches %}
+                {% set match = item.match %}
+                <div class="match-card upcoming-match">
+                    <div class="match-header">
+                        <span class="league-badge">{{ match.league or 'League' }}</span>
+                        <span class="date">Upcoming</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="team home-team">
+                            <i class="fas fa-home"></i>
+                            <span>{{ match.home_team or 'Home Team' }}</span>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="team away-team">
+                            <span>{{ match.away_team or 'Away Team' }}</span>
+                            <i class="fas fa-flag"></i>
+                        </div>
+                    </div>
+                    <div class="match-odds">
+                        <div class="odd-item {% if item.prediction == '1' %}predicted-odd{% endif %}">
+                            <span class="odd-label">Home Win</span>
+                            <span class="odd-value">{{ "%.2f"|format(match.odds_1) if match.odds_1 else 'N/A' }}</span>
+                            {% if item.analysis_1 %}
+                            <span class="win-rate">{{ item.analysis_1.win_rate }}% win rate</span>
+                            {% endif %}
+                        </div>
+                        <div class="odd-item {% if item.prediction == 'X' %}predicted-odd{% endif %}">
+                            <span class="odd-label">Draw</span>
+                            <span class="odd-value">{{ "%.2f"|format(match.odds_x) if match.odds_x else 'N/A' }}</span>
+                            {% if item.analysis_x %}
+                            <span class="win-rate">{{ item.analysis_x.win_rate }}% win rate</span>
+                            {% endif %}
+                        </div>
+                        <div class="odd-item {% if item.prediction == '2' %}predicted-odd{% endif %}">
+                            <span class="odd-label">Away Win</span>
+                            <span class="odd-value">{{ "%.2f"|format(match.odds_2) if match.odds_2 else 'N/A' }}</span>
+                            {% if item.analysis_2 %}
+                            <span class="win-rate">{{ item.analysis_2.win_rate }}% win rate</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="prediction-box">
+                        <div class="prediction-label">
+                            <i class="fas fa-robot"></i> AI Prediction
+                        </div>
+                        <div class="prediction-result">
+                            {% if item.prediction == '1' %}
+                            <span class="pred-outcome">Home Win</span>
+                            {% elif item.prediction == 'X' %}
+                            <span class="pred-outcome">Draw</span>
+                            {% elif item.prediction == '2' %}
+                            <span class="pred-outcome">Away Win</span>
+                            {% else %}
+                            <span class="pred-outcome">Insufficient Data</span>
+                            {% endif %}
+                            <span class="confidence">{{ item.confidence }}% Confidence</span>
+                        </div>
+                    </div>
+                    <div class="match-source">
+                        <i class="fas fa-database"></i> {{ match.source or 'Bookmaker' }}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-calendar-times"></i>
+                <p>No upcoming matches available yet</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <h3>Football Odds Predictor</h3>
+                <p>© 2026 Football Odds Predictor | AI-Powered Betting Intelligence Platform</p>
+                <p>Analyzing trends from Premier League, La Liga, Serie A, Bundesliga & Ligue 1</p>
+                
+                <div class="footer-contact">
+                    <h4><i class="fas fa-envelope"></i> Contact & Support</h4>
+                    <div class="footer-links">
+                        <a href="https://facebook.com/andrew.fectus.bangalie" target="_blank">
+                            <i class="fab fa-facebook"></i> Facebook Support
+                        </a>
+                        <a href="https://wa.me/23279002033" target="_blank">
+                            <i class="fab fa-whatsapp"></i> WhatsApp Support
+                        </a>
+                        <a href="https://tiktok.com/@Andy1" target="_blank">
+                            <i class="fab fa-tiktok"></i> TikTok Support
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
