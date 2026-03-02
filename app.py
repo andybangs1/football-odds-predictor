@@ -79,85 +79,184 @@ def init_sample_data():
         # Only add sample data if database is empty
         if OddsRecord.query.count() == 0:
             sample_matches = [
-                {
-                    'home_team': 'Man City', 'away_team': 'Arsenal', 'league': 'Premier League',
-                    'odds_1': 1.85, 'odds_x': 3.50, 'odds_2': 4.20, 'actual_result': '1',
-                    'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
-                    'uploaded_at': datetime.now() - timedelta(days=2)
-                },
-                {
-                    'home_team': 'Real Madrid', 'away_team': 'Barcelona', 'league': 'La Liga',
-                    'odds_1': 2.10, 'odds_x': 3.30, 'odds_2': 3.40, 'actual_result': 'X',
-                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
-                    'uploaded_at': datetime.now() - timedelta(days=3)
-                },
-                {
-                    'home_team': 'Inter Milan', 'away_team': 'AC Milan', 'league': 'Serie A',
-                    'odds_1': 2.20, 'odds_x': 3.20, 'odds_2': 3.25, 'actual_result': '1',
-                    'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
-                    'uploaded_at': datetime.now() - timedelta(days=4)
-                },
-                {
-                    'home_team': 'Bayern Munich', 'away_team': 'Dortmund', 'league': 'Bundesliga',
-                    'odds_1': 1.65, 'odds_x': 4.00, 'odds_2': 5.50, 'actual_result': '1',
-                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 4,
-                    'uploaded_at': datetime.now() - timedelta(days=5)
-                },
-                {
-                    'home_team': 'PSG', 'away_team': 'Monaco', 'league': 'Ligue 1',
-                    'odds_1': 1.55, 'odds_x': 4.20, 'odds_2': 6.00, 'actual_result': '1',
-                    'source': 'Betpawa', 'is_completed': True, 'btts': 'N', 'goals_for': 2,
-                    'uploaded_at': datetime.now() - timedelta(days=6)
-                },
-                {
-                    'home_team': 'Liverpool', 'away_team': 'Chelsea', 'league': 'Premier League',
-                    'odds_1': 2.00, 'odds_x': 3.40, 'odds_2': 3.75, 'actual_result': '2',
-                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
-                    'uploaded_at': datetime.now() - timedelta(days=7)
-                },
-                {
-                    'home_team': 'Atletico Madrid', 'away_team': 'Sevilla', 'league': 'La Liga',
-                    'odds_1': 1.90, 'odds_x': 3.40, 'odds_2': 4.50, 'actual_result': 'X',
-                    'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
-                    'uploaded_at': datetime.now() - timedelta(days=8)
-                },
-                {
-                    'home_team': 'Juventus', 'away_team': 'Napoli', 'league': 'Serie A',
-                    'odds_1': 2.30, 'odds_x': 3.10, 'odds_2': 3.20, 'actual_result': '2',
-                    'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
-                    'uploaded_at': datetime.now() - timedelta(days=9)
-                },
-                # Upcoming matches
-                {
-                    'home_team': 'Tottenham', 'away_team': 'Man United', 'league': 'Premier League',
-                    'odds_1': 2.15, 'odds_x': 3.30, 'odds_2': 3.50, 'source': 'Betpawa',
-                    'is_completed': False, 'uploaded_at': datetime.now()
-                },
-                {
-                    'home_team': 'Brighton', 'away_team': 'Newcastle', 'league': 'Premier League',
-                    'odds_1': 2.40, 'odds_x': 3.20, 'odds_2': 3.00, 'source': '1xbet',
-                    'is_completed': False, 'uploaded_at': datetime.now()
-                },
-                {
-                    'home_team': 'Valencia', 'away_team': 'Athletic Bilbao', 'league': 'La Liga',
-                    'odds_1': 2.05, 'odds_x': 3.35, 'odds_2': 3.80, 'source': 'Betpawa',
-                    'is_completed': False, 'uploaded_at': datetime.now()
-                },
-                {
-                    'home_team': 'AS Roma', 'away_team': 'Lazio', 'league': 'Serie A',
-                    'odds_1': 2.25, 'odds_x': 3.25, 'odds_2': 3.30, 'source': '1xbet',
-                    'is_completed': False, 'uploaded_at': datetime.now()
-                },
-                {
-                    'home_team': 'RB Leipzig', 'away_team': 'Leverkusen', 'league': 'Bundesliga',
-                    'odds_1': 2.35, 'odds_x': 3.40, 'odds_2': 3.00, 'source': 'Betpawa',
-                    'is_completed': False, 'uploaded_at': datetime.now()
-                },
-                {
-                    'home_team': 'Marseille', 'away_team': 'Lyon', 'league': 'Ligue 1',
-                    'odds_1': 2.10, 'odds_x': 3.30, 'odds_2': 3.60, 'source': '1xbet',
-                    'is_completed': False, 'uploaded_at': datetime.now()
-                }
+                # ============ PAST MATCHES WITH RESULTS ============
+                
+                # Premier League - Past
+                {'home_team': 'Man City', 'away_team': 'Arsenal', 'league': 'Premier League',
+                 'odds_1': 1.85, 'odds_x': 3.50, 'odds_2': 4.20, 'actual_result': '1',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=2)},
+                {'home_team': 'Liverpool', 'away_team': 'Chelsea', 'league': 'Premier League',
+                 'odds_1': 2.00, 'odds_x': 3.40, 'odds_2': 3.75, 'actual_result': '1',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=3)},
+                {'home_team': 'Aston Villa', 'away_team': 'Tottenham', 'league': 'Premier League',
+                 'odds_1': 2.45, 'odds_x': 3.30, 'odds_2': 2.95, 'actual_result': 'X',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
+                 'uploaded_at': datetime.now() - timedelta(days=4)},
+                {'home_team': 'Man United', 'away_team': 'Newcastle', 'league': 'Premier League',
+                 'odds_1': 2.10, 'odds_x': 3.45, 'odds_2': 3.60, 'actual_result': '2',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'N', 'goals_for': 1,
+                 'uploaded_at': datetime.now() - timedelta(days=5)},
+                
+                # La Liga - Past
+                {'home_team': 'Real Madrid', 'away_team': 'Barcelona', 'league': 'La Liga',
+                 'odds_1': 2.15, 'odds_x': 3.40, 'odds_2': 3.30, 'actual_result': '1',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 4,
+                 'uploaded_at': datetime.now() - timedelta(days=3)},
+                {'home_team': 'Atletico Madrid', 'away_team': 'Sevilla', 'league': 'La Liga',
+                 'odds_1': 1.75, 'odds_x': 3.60, 'odds_2': 4.80, 'actual_result': '1',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'N', 'goals_for': 2,
+                 'uploaded_at': datetime.now() - timedelta(days=4)},
+                {'home_team': 'Real Sociedad', 'away_team': 'Valencia', 'league': 'La Liga',
+                 'odds_1': 2.05, 'odds_x': 3.25, 'odds_2': 3.90, 'actual_result': 'X',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
+                 'uploaded_at': datetime.now() - timedelta(days=6)},
+                
+                # Serie A - Past
+                {'home_team': 'Inter Milan', 'away_team': 'AC Milan', 'league': 'Serie A',
+                 'odds_1': 2.10, 'odds_x': 3.30, 'odds_2': 3.50, 'actual_result': '1',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=2)},
+                {'home_team': 'Juventus', 'away_team': 'Napoli', 'league': 'Serie A',
+                 'odds_1': 2.30, 'odds_x': 3.20, 'odds_2': 3.15, 'actual_result': '2',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=4)},
+                {'home_team': 'AS Roma', 'away_team': 'Atalanta', 'league': 'Serie A',
+                 'odds_1': 2.55, 'odds_x': 3.35, 'odds_2': 2.80, 'actual_result': 'X',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 4,
+                 'uploaded_at': datetime.now() - timedelta(days=5)},
+                
+                # Bundesliga - Past
+                {'home_team': 'Bayern Munich', 'away_team': 'Borussia Dortmund', 'league': 'Bundesliga',
+                 'odds_1': 1.65, 'odds_x': 4.10, 'odds_2': 5.50, 'actual_result': '1',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 4,
+                 'uploaded_at': datetime.now() - timedelta(days=3)},
+                {'home_team': 'RB Leipzig', 'away_team': 'Bayer Leverkusen', 'league': 'Bundesliga',
+                 'odds_1': 2.25, 'odds_x': 3.50, 'odds_2': 3.10, 'actual_result': '2',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=5)},
+                {'home_team': 'Eintracht Frankfurt', 'away_team': 'VfB Stuttgart', 'league': 'Bundesliga',
+                 'odds_1': 2.40, 'odds_x': 3.30, 'odds_2': 3.00, 'actual_result': '1',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=6)},
+                
+                # Ligue 1 - Past
+                {'home_team': 'PSG', 'away_team': 'Marseille', 'league': 'Ligue 1',
+                 'odds_1': 1.50, 'odds_x': 4.50, 'odds_2': 6.50, 'actual_result': '1',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=3)},
+                {'home_team': 'Monaco', 'away_team': 'Lyon', 'league': 'Ligue 1',
+                 'odds_1': 2.15, 'odds_x': 3.40, 'odds_2': 3.50, 'actual_result': 'X',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
+                 'uploaded_at': datetime.now() - timedelta(days=5)},
+                {'home_team': 'Lille', 'away_team': 'Nice', 'league': 'Ligue 1',
+                 'odds_1': 2.05, 'odds_x': 3.30, 'odds_2': 3.75, 'actual_result': '1',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'N', 'goals_for': 2,
+                 'uploaded_at': datetime.now() - timedelta(days=7)},
+                
+                # Champions League - Past
+                {'home_team': 'Real Madrid', 'away_team': 'Man City', 'league': 'Champions League',
+                 'odds_1': 2.40, 'odds_x': 3.30, 'odds_2': 2.90, 'actual_result': '1',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 4,
+                 'uploaded_at': datetime.now() - timedelta(days=4)},
+                {'home_team': 'Bayern Munich', 'away_team': 'Arsenal', 'league': 'Champions League',
+                 'odds_1': 1.95, 'odds_x': 3.60, 'odds_2': 3.90, 'actual_result': 'X',
+                 'source': '1xbet', 'is_completed': True, 'btts': 'Y', 'goals_for': 2,
+                 'uploaded_at': datetime.now() - timedelta(days=6)},
+                {'home_team': 'Inter Milan', 'away_team': 'Atletico Madrid', 'league': 'Champions League',
+                 'odds_1': 2.20, 'odds_x': 3.20, 'odds_2': 3.40, 'actual_result': '2',
+                 'source': 'Betpawa', 'is_completed': True, 'btts': 'Y', 'goals_for': 3,
+                 'uploaded_at': datetime.now() - timedelta(days=8)},
+                
+                # ============ UPCOMING MATCHES ============
+                
+                # Premier League - Upcoming
+                {'home_team': 'Arsenal', 'away_team': 'Tottenham', 'league': 'Premier League',
+                 'odds_1': 1.95, 'odds_x': 3.60, 'odds_2': 4.00, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Chelsea', 'away_team': 'Man United', 'league': 'Premier League',
+                 'odds_1': 2.10, 'odds_x': 3.40, 'odds_2': 3.50, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Newcastle', 'away_team': 'Brighton', 'league': 'Premier League',
+                 'odds_1': 2.05, 'odds_x': 3.45, 'odds_2': 3.70, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'West Ham', 'away_team': 'Liverpool', 'league': 'Premier League',
+                 'odds_1': 4.50, 'odds_x': 3.80, 'odds_2': 1.75, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Man City', 'away_team': 'Aston Villa', 'league': 'Premier League',
+                 'odds_1': 1.40, 'odds_x': 5.00, 'odds_2': 8.50, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                
+                # La Liga - Upcoming
+                {'home_team': 'Barcelona', 'away_team': 'Atletico Madrid', 'league': 'La Liga',
+                 'odds_1': 1.80, 'odds_x': 3.70, 'odds_2': 4.50, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Sevilla', 'away_team': 'Real Betis', 'league': 'La Liga',
+                 'odds_1': 2.30, 'odds_x': 3.25, 'odds_2': 3.20, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Valencia', 'away_team': 'Real Madrid', 'league': 'La Liga',
+                 'odds_1': 5.20, 'odds_x': 4.00, 'odds_2': 1.60, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Athletic Bilbao', 'away_team': 'Villarreal', 'league': 'La Liga',
+                 'odds_1': 2.15, 'odds_x': 3.35, 'odds_2': 3.55, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                
+                # Serie A - Upcoming
+                {'home_team': 'Napoli', 'away_team': 'Inter Milan', 'league': 'Serie A',
+                 'odds_1': 2.50, 'odds_x': 3.30, 'odds_2': 2.80, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'AC Milan', 'away_team': 'Juventus', 'league': 'Serie A',
+                 'odds_1': 2.35, 'odds_x': 3.25, 'odds_2': 3.10, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Lazio', 'away_team': 'AS Roma', 'league': 'Serie A',
+                 'odds_1': 2.20, 'odds_x': 3.40, 'odds_2': 3.30, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Atalanta', 'away_team': 'Fiorentina', 'league': 'Serie A',
+                 'odds_1': 1.90, 'odds_x': 3.55, 'odds_2': 4.20, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                
+                # Bundesliga - Upcoming
+                {'home_team': 'Borussia Dortmund', 'away_team': 'RB Leipzig', 'league': 'Bundesliga',
+                 'odds_1': 2.05, 'odds_x': 3.50, 'odds_2': 3.60, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Bayer Leverkusen', 'away_team': 'Bayern Munich', 'league': 'Bundesliga',
+                 'odds_1': 3.80, 'odds_x': 3.70, 'odds_2': 1.90, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'VfB Stuttgart', 'away_team': 'Borussia M\'gladbach', 'league': 'Bundesliga',
+                 'odds_1': 2.25, 'odds_x': 3.40, 'odds_2': 3.20, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Union Berlin', 'away_team': 'Eintracht Frankfurt', 'league': 'Bundesliga',
+                 'odds_1': 2.45, 'odds_x': 3.30, 'odds_2': 2.95, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                
+                # Ligue 1 - Upcoming
+                {'home_team': 'Lyon', 'away_team': 'PSG', 'league': 'Ligue 1',
+                 'odds_1': 4.80, 'odds_x': 3.90, 'odds_2': 1.65, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Marseille', 'away_team': 'Monaco', 'league': 'Ligue 1',
+                 'odds_1': 2.15, 'odds_x': 3.35, 'odds_2': 3.50, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Nice', 'away_team': 'Lille', 'league': 'Ligue 1',
+                 'odds_1': 2.30, 'odds_x': 3.25, 'odds_2': 3.25, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Lens', 'away_team': 'Rennes', 'league': 'Ligue 1',
+                 'odds_1': 2.10, 'odds_x': 3.40, 'odds_2': 3.55, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                
+                # Champions League - Upcoming
+                {'home_team': 'Man City', 'away_team': 'Real Madrid', 'league': 'Champions League',
+                 'odds_1': 1.95, 'odds_x': 3.60, 'odds_2': 3.80, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Arsenal', 'away_team': 'Bayern Munich', 'league': 'Champions League',
+                 'odds_1': 2.50, 'odds_x': 3.40, 'odds_2': 2.75, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'Atletico Madrid', 'away_team': 'Inter Milan', 'league': 'Champions League',
+                 'odds_1': 2.30, 'odds_x': 3.20, 'odds_2': 3.25, 'source': '1xbet',
+                 'is_completed': False, 'uploaded_at': datetime.now()},
+                {'home_team': 'PSG', 'away_team': 'Barcelona', 'league': 'Champions League',
+                 'odds_1': 2.60, 'odds_x': 3.30, 'odds_2': 2.70, 'source': 'Betpawa',
+                 'is_completed': False, 'uploaded_at': datetime.now()}
             ]
             
             for match_data in sample_matches:
