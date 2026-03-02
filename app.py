@@ -850,6 +850,30 @@ def admin():
     """
     return render_template('index.html')
 
+@app.route('/init-data')
+def manual_init_data():
+    """
+    Manually trigger database initialization (useful if auto-init didn't run)
+    """
+    try:
+        count_before = OddsRecord.query.count()
+        init_sample_data()
+        count_after = OddsRecord.query.count()
+        added = count_after - count_before
+        
+        return jsonify({
+            'success': True,
+            'message': f'Database initialized successfully',
+            'matches_before': count_before,
+            'matches_after': count_after,
+            'matches_added': added
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
     """
