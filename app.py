@@ -6,6 +6,7 @@ import json
 from datetime import datetime, timedelta
 import logging
 from logging.handlers import RotatingFileHandler
+import requests
 
 try:
     import pytesseract
@@ -273,6 +274,12 @@ def init_sample_data():
 with app.app_context():
     db.create_all()
     init_sample_data()
+    # Update with live upcoming fixtures from web
+    try:
+        from fetch_live_fixtures import update_live_fixtures
+        update_live_fixtures()
+    except Exception as e:
+        app.logger.warning(f"Could not fetch live fixtures: {e}")
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -966,6 +973,32 @@ def manual_init_data():
             'matches_before': count_before,
             'matches_after': count_after,
             'matches_added': added
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/refresh-fixtures')
+def refresh_live_fixtures():
+    """
+    Refresh upcoming fixtures from live web sources (tomorrow's matches)
+    """
+    try:
+        from fetch_live_fixtures import update_live_fixtures
+        
+        count_before = OddsRecord.query.filter_by(is_completed=False).count()
+        update_live_fixtures()
+        count_after = OddsRecord.query.filter_by(is_completed=False).count()
+        added = count_after - count_before
+        
+        return jsonify({
+            'success': True,
+            'message': 'Live fixtures refreshed from web sources',
+            'upcoming_matches_before': count_before,
+            'upcoming_matches_after': count_after,
+            'new_matches': added
         })
     except Exception as e:
         return jsonify({
