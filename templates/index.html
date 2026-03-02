@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Odds Predictor | Free Betting Predictions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-football-ball"></i> Football Odds Predictor</h1>
+                <p>Upload odds screenshots from Betpawa & 1xbet to predict upcoming odds</p>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-btn active" onclick="showTab('upload')">
+                <i class="fas fa-upload"></i> Upload Odds
+            </button>
+            <button class="nav-btn" onclick="showTab('history')">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="nav-btn" onclick="showTab('predictions')">
+                <i class="fas fa-crystal-ball"></i> Predictions
+            </button>
+            <button class="nav-btn" onclick="showTab('analysis')">
+                <i class="fas fa-chart-line"></i> Odds Analysis
+            </button>
+            <button class="nav-btn" onclick="showTab('stats')">
+                <i class="fas fa-chart-bar"></i> Statistics
+            </button>
+            <button class="nav-btn" onclick="showTab('api')">
+                <i class="fas fa-code"></i> API Predict
+            </button>
+            <button class="nav-btn" onclick="showTab('api_upload')">
+                <i class="fas fa-images"></i> API Upload
+            </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <main class="content">
+            <!-- Upload Tab -->
+            <section id="upload" class="tab-content active">
+                <div class="card">
+                    <h2>📤 Upload Screenshots - AI Auto-Extract Everything!</h2>
+                    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <strong>🚀 NEW: Bulk Upload & AI Extraction!</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Upload <strong>multiple screenshots at once</strong> (hold Ctrl/Cmd)</li>
+                            <li>AI automatically extracts: <strong>team names, odds, source</strong></li>
+                            <li>Just drop images - no manual input needed!</li>
+                            <li>Compares past results to predict upcoming fixtures</li>
+                        </ul>
+                    </div>
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="fileInput">📸 Upload Screenshot(s) - Single or Multiple Files</label>
+                            <div class="file-input-wrapper" id="dropZone">
+                                <input type="file" id="fileInput" name="file" accept="image/*" multiple>
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 3em; margin-bottom: 10px;"></i>
+                                    <span id="fileName">Click to select multiple images or drag & drop here</span>
+                                    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.7;">
+                                        <strong>Hold Ctrl (Windows) or Cmd (Mac)</strong> to select multiple files<br>
+                                        Supports: JPG, PNG, GIF, BMP from Desktop, Downloads, Phone, etc.
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="imagePreview" style="display:none; margin-top: 15px;">
+                                <div id="previewContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px;"></div>
+                                <button type="button" class="btn btn-secondary" onclick="clearImage()" style="margin-top: 10px; width: auto; padding: 8px 16px;">
+                                    <i class="fas fa-times"></i> Clear All Images
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <strong>💡 Optional Fields (AI will auto-fill from images):</strong>
+                            <p style="margin: 5px 0; font-size: 0.9em; opacity: 0.8;">Leave blank to let AI extract everything automatically</p>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="matchName">Match Name (Optional - AI extracts)</label>
+                                <input type="text" id="matchName" name="match_name" placeholder="Leave blank for AI extraction">
+                            </div>
+                            <div class="form-group">
+                                <label for="source">Source (Optional - AI detects)</label>
+                                <select id="source" name="source">
+                                    <option value="">Auto-detect from image</option>
+                                    <option value="Betpawa">Betpawa</option>
+                                    <option value="1xbet">1xbet</option>
+                                    <option value="Bet365">Bet365</option>
+                                    <option value="22bet">22bet</option>
+                                    <option value="Sportybet">Sportybet</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="homeTeam">🏠 Home Team (Optional - AI extracts)</label>
+                                <input type="text" id="homeTeam" name="home_team" placeholder="Leave blank for AI extraction">
+                            </div>
+                            <div class="form-group">
+                                <label for="awayTeam">✈️ Away Team (Optional - AI extracts)</label>
+                                <input type="text" id="awayTeam" name="away_team" placeholder="Leave blank for AI extraction">
+                            </div>
+                        </div>
+
+                        <div class="odds-input">
+                            <h3>Odds (Optional - AI extracts from image)</h3>
+                            <div class="odds-row">
+                                <div class="form-group">
+                                    <label for="odds1">1 (Home Win)</label>
+                                    <input type="number" id="odds1" name="odds_1" placeholder="Auto-extract" step="0.01" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="oddsX">X (Draw)</label>
+                                    <input type="number" id="oddsX" name="odds_x" placeholder="Auto-extract" step="0.01" min="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="odds2">2 (Away Win)</label>
+                                    <input type="number" id="odds2" name="odds_2" placeholder="e.g., 2.80" step="0.01" min="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Notes (Optional)</label>
+                            <textarea id="notes" name="notes" placeholder="Add any notes about this match..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-cloud-upload-alt"></i> Upload & Predict
+                        </button>
+                    </form>
+
+                    <div id="uploadResult" class="result"></div>
+                </div>
+            </section>
+
+            <!-- History Tab -->
+            <section id="history" class="tab-content">
+                <div class="card">
+                    <h2>Odds History</h2>
+                    <div id="historyContainer" class="history-list"></div>
+                </div>
+            </section>
+
+            <!-- Predictions Tab -->
+            <section id="predictions" class="tab-content">
+                <div class="card">
+                    <h2>Odds Predictions</h2>
+                    <div id="predictionsContainer" class="predictions-list"></div>
+                </div>
+            </section>
+
+            <!-- Advanced Analysis Tab -->
+            <section id="analysis" class="tab-content">
+                <div class="card">
+                    <h2>📊 Advanced Odds Analysis & Value Bets</h2>
+                    <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffe8a1 100%); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <strong>🎯 Value Betting Detection</strong>
+                        <p style="margin: 10px 0; font-size: 0.95em;">AI identifies bets where historical win rates exceed implied probability - Find underpriced bets!</p>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label for="analysisSource">Filter by Source:</label>
+                        <select id="analysisSource" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                            <option value="">All Sources</option>
+                            <option value="Betpawa">Betpawa</option>
+                            <option value="1xbet">1xbet</option>
+                            <option value="Bet365">Bet365</option>
+                            <option value="22bet">22bet</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="loadOddsReport()" style="margin-left: 10px;">
+                            <i class="fas fa-sync"></i> Refresh Report
+                        </button>
+                    </div>
+                    
+                    <div id="analysisContainer" style="overflow-x: auto;">
+                        <p style="text-align: center; color: #999;">Load odds analysis report...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Statistics Tab -->
+            <section id="stats" class="tab-content">
+                <div class="card">
+                    <h2>Statistics & Analysis</h2>
+                    <div id="statsContainer" class="stats-grid"></div>
+                </div>
+            </section>
+
+            <!-- API Predict Tab -->
+            <section id="api" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-code"></i> API Predict - Text-Based Odds Analysis</h2>
+                    <div style="background: linear-gradient(135deg, #e8f4f8 0%, #d0e8f0 100%); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <strong>💡 How it works:</strong>
+                        <p style="margin: 10px 0; font-size: 0.95em;">Enter odds as text (e.g., "1.8 vs 4.0" or "1.5-2.5-6.0") and get instant analysis</p>
+                    </div>
+                    
+                    <form id="apiPredictForm" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="predictPrompt">Analyze Odds (e.g., "1.8 vs 4.0")</label>
+                            <textarea id="predictPrompt" name="prompt" placeholder="Enter odds:\n- '1.8 vs 4.0'\n- '1.5-2.5-6.0'\n- 'Calculate probability for 1.8 and 4.0'" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-family: monospace; height: 80px;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Analyze Odds
+                        </button>
+                    </form>
+
+                    <div id="apiPredictResult" style="display: none;">
+                        <!-- Results table will be inserted here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- API Upload Tab -->
+            <section id="api_upload" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-images"></i> API Upload - Batch Screenshot Analysis</h2>
+                    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2ff 100%); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <strong>🎯 Features:</strong>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Upload multiple screenshots at once</li>
+                            <li>Auto-extract team names, odds, source</li>
+                            <li>Get predictions for each screenshot</li>
+                            <li>Display results in professional table</li>
+                        </ul>
+                    </div>
+
+                    <form id="apiUploadForm" enctype="multipart/form-data" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="apiUploadFile">📸 Select Screenshots</label>
+                            <div class="file-input-wrapper" id="apiDropZone">
+                                <input type="file" id="apiUploadFile" name="file" accept="image/*" multiple>
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 3em; margin-bottom: 10px;"></i>
+                                    <span id="apiFileName">Click or drag screenshots here</span>
+                                    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.7;">
+                                        <strong>Hold Ctrl</strong> for multiple files
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="apiFilePreview" style="display:none; margin-top: 15px; max-height: 200px; overflow-y: auto;">
+                                <div id="apiPreviewContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px;"></div>
+                                <button type="button" class="btn btn-secondary" onclick="clearApiFiles()" style="margin-top: 10px; width: auto; padding: 8px 16px;">
+                                    <i class="fas fa-times"></i> Clear
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload & Analyze
+                        </button>
+                    </form>
+
+                    <div id="apiUploadResult" style="display: none;">
+                        <!-- Results table will be inserted here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 Football Odds Predictor | Free Betting Intelligence Platform</p>
+            <p>Share predictions with your Facebook followers and earn affiliate commissions!</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
