@@ -65,6 +65,22 @@ body {
     animation: rotate 10s linear infinite;
 }
 
+.cup-icon {
+    position: absolute;
+    right: 12px;
+    top: 8px;
+    font-size: 52px;
+    color: #ffd54a;
+    text-shadow: 0 0 14px rgba(255, 213, 74, 0.8), 0 0 28px rgba(255, 213, 74, 0.45);
+    z-index: 3;
+    animation: floatCup 2.2s ease-in-out infinite;
+}
+
+@keyframes floatCup {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
 @keyframes rotate {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -793,6 +809,12 @@ body {
 
     .football-icon {
         font-size: 90px;
+    }
+
+    .cup-icon {
+        font-size: 38px;
+        right: 6px;
+        top: 6px;
     }
 
     .cta-button {
