@@ -913,6 +913,40 @@ def manual_init_data():
             'error': str(e)
         }), 500
 
+@app.route('/reset-database')
+def reset_database():
+    """
+    FORCE RESET: Delete all data and reinitialize with fresh upcoming matches
+    Use this to fix old/incorrect data on live site
+    """
+    try:
+        # Delete ALL existing data
+        count_before = OddsRecord.query.count()
+        OddsRecord.query.delete()
+        db.session.commit()
+        
+        # Reinitialize with fresh data
+        init_sample_data()
+        
+        count_after = OddsRecord.query.count()
+        past = OddsRecord.query.filter_by(is_completed=True).count()
+        upcoming = OddsRecord.query.filter_by(is_completed=False).count()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Database reset successfully with fresh data',
+            'old_matches_deleted': count_before,
+            'new_matches_added': count_after,
+            'past_matches': past,
+            'upcoming_matches': upcoming
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 @app.route('/refresh-fixtures')
 def refresh_live_fixtures():
     """
