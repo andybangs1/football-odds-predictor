@@ -15,7 +15,7 @@ ODDS_API_BASE = "https://api.the-odds-api.com/v4"
 
 # API Keys (Free tier - user should get their own)
 API_FOOTBALL_KEY = ""  # Get free key from api-football.com
-FOOTBALL_DATA_KEY = ""  # Get free key from football-data.org
+FOOTBALL_DATA_KEY = "fe1800f0b2d54fa1bb0dddc5744c59c2"  # Get free key from football-data.org
 ODDS_API_KEY = ""  # Get free key from the-odds-api.com
 
 def get_tomorrow_matches():
