@@ -17,6 +17,223 @@ body {
     padding: 20px;
 }
 
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #1a5f1a 0%, #0d3d0d 100%);
+    color: white;
+    padding: 80px 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(0, 255, 0, 0.1) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.6; }
+}
+
+.football-logo {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.football-icon {
+    font-size: 120px;
+    color: white;
+    text-shadow: 0 0 30px rgba(0, 255, 0, 0.8), 0 0 60px rgba(0, 255, 0, 0.5);
+    position: relative;
+    z-index: 2;
+    animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.flame-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.flame {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 40px;
+    height: 60px;
+    background: linear-gradient(to top, #00ff00 0%, #00cc00 50%, transparent 100%);
+    border-radius: 50% 50% 0 0;
+    transform: translateX(-50%) scaleY(1);
+    filter: blur(8px);
+    animation: flicker 0.8s ease-in-out infinite;
+}
+
+.flame-1 {
+    animation-delay: 0s;
+    opacity: 0.9;
+}
+
+.flame-2 {
+    animation-delay: 0.2s;
+    left: 35%;
+    opacity: 0.7;
+    width: 35px;
+    height: 50px;
+}
+
+.flame-3 {
+    animation-delay: 0.4s;
+    left: 65%;
+    opacity: 0.7;
+    width: 35px;
+    height: 50px;
+}
+
+@keyframes flicker {
+    0%, 100% {
+        transform: translateX(-50%) scaleY(1) scaleX(1);
+        opacity: 0.9;
+    }
+    25% {
+        transform: translateX(-50%) scaleY(1.2) scaleX(0.9);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(-50%) scaleY(0.9) scaleX(1.1);
+        opacity: 0.8;
+    }
+    75% {
+        transform: translateX(-50%) scaleY(1.15) scaleX(0.95);
+        opacity: 0.95;
+    }
+}
+
+.hero-title {
+    font-size: 3.5em;
+    margin-bottom: 15px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-subtitle {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    opacity: 0.95;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-description {
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    opacity: 0.85;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 2;
+}
+
+.cta-button {
+    background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
+    color: #0d3d0d;
+    padding: 18px 40px;
+    font-size: 1.3em;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0, 255, 0, 0.4);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(0, 255, 0, 0.6);
+}
+
+.cta-button i {
+    margin-left: 10px;
+}
+
+/* Contact Banner */
+.contact-banner {
+    background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.3);
+    text-align: center;
+}
+
+.contact-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.contact-title i {
+    margin-right: 10px;
+}
+
+.contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.contact-item {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+}
+
+.contact-item:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.contact-item i {
+    margin-right: 8px;
+}
+
 /* Header */
 .header {
     background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
@@ -469,17 +686,69 @@ body {
 
 /* Footer */
 .footer {
-    background: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #1a5f1a 0%, #0d3d0d 100%);
     color: white;
     text-align: center;
-    padding: 20px;
-    border-radius: 8px;
+    padding: 40px 20px;
+    border-radius: 15px;
     margin-top: 40px;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
 }
 
-.footer p {
-    margin: 5px 0;
+.footer-content h3 {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #00ff00;
+    text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+}
+
+.footer-content p {
+    margin: 8px 0;
+    opacity: 0.9;
+}
+
+.footer-contact {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px solid rgba(0, 255, 0, 0.3);
+}
+
+.footer-contact h4 {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #00ff00;
+}
+
+.footer-contact h4 i {
+    margin-right: 10px;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    padding: 12px 20px;
+    background: rgba(0, 255, 0, 0.15);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.footer-links a:hover {
+    background: rgba(0, 255, 0, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+}
+
+.footer-links a i {
+    margin-right: 8px;
 }
 
 /* Loading */
@@ -501,6 +770,56 @@ body {
 
 /* Responsive */
 @media (max-width: 768px) {
+    .hero-section {
+        padding: 50px 15px;
+    }
+
+    .hero-title {
+        font-size: 2.2em;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2em;
+    }
+
+    .hero-description {
+        font-size: 1em;
+    }
+
+    .football-logo {
+        width: 150px;
+        height: 150px;
+    }
+
+    .football-icon {
+        font-size: 90px;
+    }
+
+    .cta-button {
+        padding: 15px 30px;
+        font-size: 1.1em;
+    }
+
+    .contact-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .contact-item {
+        width: 100%;
+        display: block;
+    }
+
+    .footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .footer-links a {
+        width: 100%;
+        display: block;
+    }
+
     .header h1 {
         font-size: 1.8em;
     }
