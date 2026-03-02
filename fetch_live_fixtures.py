@@ -140,38 +140,46 @@ def update_live_fixtures():
     print("="*70)
     
     fixtures = get_tomorrow_matches()
+    count = 0
     
     if not fixtures:
-        # Use fallback fixtures
-        fallback = get_fallback_fixtures()
-        count = 0
-        for f in fallback:
-            if add_live_fixture(f['home'], f['away'], f['league'], f['odds']):
-                count += 1
-        print(f"\n📊 Added {count} live fixture(s)")
+        print(f"\n📊 No fixtures available")
     else:
-        # Process API fixtures
-        count = 0
-        for match in fixtures:
-            try:
-                home_team = match.get('homeTeam', {}).get('name', '')
-                away_team = match.get('awayTeam', {}).get('name', '')
-                league = match.get('competition', {}).get('name', 'Unknown')
-                
-                # Skip non-major leagues
-                if league not in ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions League']:
-                    continue
-                
-                # Estimate odds (API doesn't always provide)
-                odds = (2.0, 3.5, 3.5)  # Default odds
-                
-                if add_live_fixture(home_team, away_team, league, odds, source="Live Web API"):
-                    count += 1
-                    
-            except Exception as e:
-                print(f"⚠️  Error processing match: {e}")
+        # Check fixture type by examining first item
+        first_fixture = fixtures[0] if fixtures else {}
         
-        print(f"\n📊 Updated {count} live fixture(s)")
+        # Fallback fixtures have 'home' key, API fixtures have 'homeTeam' key
+        if 'home' in first_fixture:
+            # Process fallback fixtures
+            for f in fixtures:
+                if add_live_fixture(f['home'], f['away'], f['league'], f['odds']):
+                    count += 1
+            print(f"\n📊 Added {count} fallback fixture(s)")
+        else:
+            # Process API fixtures
+            for match in fixtures:
+                try:
+                    home_team = match.get('homeTeam', {}).get('name', '')
+                    away_team = match.get('awayTeam', {}).get('name', '')
+                    league = match.get('competition', {}).get('name', 'Unknown')
+                    
+                    if not home_team or not away_team:
+                        continue
+                    
+                    # Skip non-major leagues
+                    if league not in ['Premier League', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1', 'Champions League']:
+                        continue
+                    
+                    # Estimate odds (API doesn't always provide)
+                    odds = (2.0, 3.5, 3.5)  # Default odds
+                    
+                    if add_live_fixture(home_team, away_team, league, odds, source="Live Web API"):
+                        count += 1
+                        
+                except Exception as e:
+                    print(f"⚠️  Error processing match: {e}")
+            
+            print(f"\n📊 Updated {count} live fixture(s) from API")
     
     print("="*70 + "\n")
 
